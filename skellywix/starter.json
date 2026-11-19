@@ -1,0 +1,42 @@
+[
+  {
+    "id": "test-change",
+    "title": "Test a change",
+    "tags": [
+      "assert",
+      "regression",
+      "test"
+    ],
+    "advice": "Write down the user-visible result. Run the smallest existing check that can fail for the reported behavior. Compare the result before and after the change."
+  },
+  {
+    "id": "recover-job",
+    "title": "Recover an interrupted job",
+    "tags": [
+      "queue",
+      "resume",
+      "retry"
+    ],
+    "advice": "Find the last durable checkpoint. Separate completed work from pending work. Confirm the next operation is safe to repeat before resuming it."
+  },
+  {
+    "id": "review-release",
+    "title": "Review a release",
+    "tags": [
+      "package",
+      "publish",
+      "release"
+    ],
+    "advice": "List the artifacts and intended audience. Verify a clean install and the rollback path. Get the owner's approval before publishing anything."
+  },
+  {
+    "id": "inspect-logs",
+    "title": "Inspect a failed run",
+    "tags": [
+      "logs",
+      "metric",
+      "trace"
+    ],
+    "advice": "Select one failed run and its time window. Compare the first failing stage against a successful run. Report the observed difference without copying private log contents."
+  }
+]

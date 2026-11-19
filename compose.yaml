@@ -1,0 +1,28 @@
+x-runtime: &runtime
+  build: .
+  restart: unless-stopped
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  mem_limit: 96m
+  pids_limit: 24
+  logging:
+    driver: json-file
+    options:
+      max-size: 1m
+      max-file: "2"
+services:
+  worker:
+    <<: *runtime
+    command: [watch, --interval, "${SKELLYWIX_INTERVAL:-60}"]
+    network_mode: none
+    volumes: [state:/state]
+  desk:
+    <<: *runtime
+    command: [serve, --container]
+    ports:
+      - "127.0.0.1:${SKELLYWIX_PORT:-8760}:8760"
+    volumes: [state:/state:ro]
+    depends_on: [worker]
+volumes:
+  state:

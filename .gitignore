@@ -1,0 +1,12 @@
+.worktrees/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.skellywix/
+*.sqlite3*
+.env
+.env.*
+desk.html

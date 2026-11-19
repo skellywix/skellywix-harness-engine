@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skellywix-harness-engine"
+version = "0.1.0"
+description = "Local, evidence-gated guide routing for agent harnesses"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = []
+
+[project.scripts]
+skellywix = "skellywix.__main__:main"
+
+[tool.setuptools]
+packages = ["skellywix"]
+
+[tool.setuptools.package-data]
+skellywix = ["starter.json", "desk.css"]

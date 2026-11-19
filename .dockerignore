@@ -1,0 +1,6 @@
+**
+!Dockerfile
+!skellywix/
+!skellywix/*.py
+!skellywix/*.json
+!skellywix/*.css
