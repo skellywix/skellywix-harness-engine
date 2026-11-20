@@ -1,12 +1,16 @@
-"""Bounded stdio MCP subset: negotiate, list and call one read-only local tool."""
+"""Bounded stdio MCP adapter; supervisor authority is selected at launch."""
 import json
+import os
 from pathlib import Path
 import sqlite3
 from typing import BinaryIO
 
 from . import engine, routing
+from .neural import active_dirs
+from .neural_inventory import Inventory
 
 VERSION = '2025-11-25'
+SUPPORTED_VERSIONS = (VERSION, '2025-06-18', '2025-03-26', '2024-11-05')
 FRAME_LIMIT = 16 * 1024
 TOOL = {
     'name': 'resolve_guide',
@@ -14,6 +18,12 @@ TOOL = {
     'inputSchema': {'type': 'object', 'additionalProperties': False, 'required': ['tags'], 'properties': {
         'tags': {'type': 'array', 'minItems': 1, 'maxItems': routing.MAX_TAGS,
                  'items': {'type': 'string', 'maxLength': 32, 'pattern': '^[a-z][a-z0-9-]{0,31}$'}}}},
+    'annotations': {'readOnlyHint': True, 'openWorldHint': False},
+}
+DISCOVERY = {
+    'name': 'harness_discovery',
+    'description': 'Discover locally registered memory, vector search, and MCP capabilities. Returns product names and counts, not connection or activity evidence.',
+    'inputSchema': {'type': 'object', 'properties': {}, 'additionalProperties': False},
     'annotations': {'readOnlyHint': True, 'openWorldHint': False},
 }
 
@@ -25,10 +35,23 @@ def _error(code, message):
 def _content(text, *, failed=False):
     return {'result': {'content': [{'type': 'text', 'text': text}], 'isError': failed}}
 
+def _project_path(project):
+    if project is None:
+        raw = os.environ.get('CLAUDE_PROJECT_DIR')
+        project = Path(raw) if raw else Path.cwd()
+    return project.expanduser().absolute()
+
+
+def _wire_value(value):
+    return _content(json.dumps(value, ensure_ascii=True, separators=(',', ':')))
+
 
 class Session:
-    def __init__(self, home: Path):
+    def __init__(self, home: Path, project: Path | None = None, *, supervisor=None):
         self.home = home
+        self.project = project
+        self.supervisor = supervisor
+        self.privileged_tools = {tool['name']: tool for tool in supervisor.tools} if supervisor else {}
         self.phase = 'new'
 
     def handle(self, msg):
@@ -53,17 +76,29 @@ class Session:
                     or not isinstance(client, dict) or not all(isinstance(client.get(k), str) for k in ('name', 'version'))):
                 return key, _error(-32602, 'Invalid initialization parameters')
             self.phase = 'negotiated'
-            return key, {'result': {'protocolVersion': VERSION, 'capabilities': {'tools': {}},
+            requested = params['protocolVersion']
+            version = requested if requested in SUPPORTED_VERSIONS else VERSION
+            return key, {'result': {'protocolVersion': version, 'capabilities': {'tools': {}},
                                     'serverInfo': {'name': 'skellywix', 'version': '0.1.0'}}}
         if self.phase != 'ready':
             return key, _error(-32002, 'Initialize the session first')
         if method == 'tools/list':
             if params.get('cursor') is not None:
                 return key, _error(-32602, 'No further cursor is available')
-            return key, {'result': {'tools': [TOOL]}}
+            return key, {'result': {'tools': [TOOL, DISCOVERY, *self.privileged_tools.values()]}}
         if method != 'tools/call':
             return key, _error(-32601, 'Unknown method')
-        if params.get('name') != TOOL['name']:
+        name = params.get('name')
+        if isinstance(name, str) and name in self.privileged_tools:
+            try:
+                return key, _wire_value(self.supervisor.call(name, params.get('arguments', {})))
+            except (ValueError, RecursionError):
+                return key, _content('The supervisor rejected the request. Check the tool input schema.', failed=True)
+            except (OSError, RuntimeError, sqlite3.Error):
+                return key, _content('The local supervisor could not complete the operation.', failed=True)
+        if name == DISCOVERY['name']:
+            return key, self.discover(params.get('arguments', {}))
+        if name != TOOL['name']:
             return key, _error(-32602, 'Unknown tool')
         args = params.get('arguments')
         if not isinstance(args, dict) or set(args) != {'tags'}:
@@ -76,11 +111,34 @@ class Session:
             value = engine.resolve(self.home, words)
         except (ValueError, sqlite3.Error, OSError):
             return key, _content('Workspace unavailable. Have its owner check the local engine.', failed=True)
-        return key, _content(json.dumps(value, ensure_ascii=True, separators=(',', ':')))
+        return key, _wire_value(value)
+
+    def discover(self, args):
+        if not isinstance(args, dict) or args:
+            return _content('This tool takes no arguments.', failed=True)
+        try:
+            project = _project_path(self.project)
+            if not project.is_dir():
+                return _content('The launch directory is unavailable. Check the MCP registration.', failed=True)
+            agent, _ = active_dirs()
+            result = Inventory(agent, project, native=False, user=Path.home()).summary()
+        except (OSError, RuntimeError, ValueError):
+            return _content('Local discovery is unavailable. Check the launch profile and MCP registration.', failed=True)
+        return _wire_value(result)
 
 
-def run(home: Path, source: BinaryIO, sink: BinaryIO) -> int:
-    session = Session(home)
+def run(home: Path, source: BinaryIO, sink: BinaryIO, *, project: Path | None = None,
+        supervisor_policy: Path | None = None, pi_agent: Path | None = None) -> int:
+    supervisor = None
+    if supervisor_policy is not None:
+        from .supervisor import Supervisor
+
+        agent, _ = active_dirs()
+        user = Path.home()
+        pi = pi_agent or user / '.pi' / 'agent'
+        supervisor = Supervisor(supervisor_policy, agent, _project_path(project), user,
+                                pi_agent=pi.expanduser().absolute())
+    session = Session(home, project, supervisor=supervisor)
     while frame := source.readline(FRAME_LIMIT + 1):
         key = None
         oversized = len(frame) > FRAME_LIMIT

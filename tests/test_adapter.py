@@ -31,7 +31,7 @@ class AgentAdapter(unittest.TestCase):
             responses = {r['id']: r for r in map(json.loads, sink.getvalue().splitlines())}
             self.assertIn('error', responses[1])
             self.assertEqual(responses[2]['result']['capabilities'], {'tools': {}})
-            self.assertEqual([t['name'] for t in responses[3]['result']['tools']], ['resolve_guide'])
+            self.assertEqual([t['name'] for t in responses[3]['result']['tools']], ['resolve_guide', 'harness_discovery'])
             guide = json.loads(responses[4]['result']['content'][0]['text'])
             self.assertEqual((guide['revision'], guide['guide']['id']), (2, 'test-change'))
             self.assertIn('error', responses[5])

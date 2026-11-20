@@ -1,0 +1,464 @@
+.desk-tabs {
+  display: flex;
+  align-items: stretch;
+  gap: .4rem;
+  margin-block: -.65rem 1.5rem;
+  padding-block-end: .5rem;
+  border-bottom: 1px solid var(--edge);
+}
+
+.desk-tabs button,
+.operator-panel button,
+#desk-confirm button {
+  border: 1px solid var(--edge);
+  border-radius: .48rem;
+  background: var(--plane);
+  color: var(--text);
+  min-height: 2.55rem;
+  padding: .55rem .75rem;
+  font-size: .87rem;
+  line-height: 1.2;
+}
+
+.desk-tabs button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--dim);
+  font-weight: 550;
+}
+
+.desk-tabs button[aria-selected="true"] {
+  color: var(--ice);
+  background: #1a2b36;
+  border-color: #3f5767;
+}
+
+.desk-tabs button:hover,
+.operator-panel button:not(:disabled):hover,
+#desk-confirm button:hover {
+  border-color: var(--ice);
+}
+
+.operator-panel button:disabled {
+  opacity: .55;
+}
+
+.operator-panel,
+.operator-panel * {
+  min-width: 0;
+}
+
+.desk-heading {
+  margin-bottom: 1.35rem;
+}
+
+.desk-lock,
+.settings-list,
+.settings-editor,
+.hindsight-detail,
+.hindsight-scene,
+.hindsight-config {
+  padding: 1.05rem;
+}
+
+.desk-lock {
+  max-width: 48rem;
+}
+
+.desk-lock p {
+  margin-block: .6rem .95rem;
+  color: var(--dim);
+  line-height: 1.5;
+}
+
+.operator-panel label {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--dim);
+}
+
+.operator-panel input,
+.operator-panel select,
+.operator-panel textarea {
+  display: block;
+  width: 100%;
+  margin-top: .35rem;
+  border: 1px solid var(--edge);
+  border-radius: .42rem;
+  padding: .5rem .6rem;
+  min-height: 2.55rem;
+  color: var(--text);
+  background: var(--plane);
+  font: .87rem/1.35 system-ui, sans-serif;
+}
+
+.operator-panel textarea {
+  font: .82rem/1.55 var(--mono);
+  tab-size: 2;
+  resize: vertical;
+}
+
+.desk-toolbar,
+.desk-unlock,
+.desk-actions,
+.desk-search {
+  display: flex;
+  gap: .65rem;
+  align-items: end;
+  flex-wrap: wrap;
+
+}
+
+.desk-toolbar {
+  margin: 0;
+  padding: .85rem;
+  border-color: var(--edge);
+}
+
+.desk-toolbar label {
+  flex: 1 1 9rem;
+}
+
+#settings-source {
+  max-width: 34rem;
+}
+
+#settings-controls label:first-of-type {
+  flex: 0 1 10rem;
+}
+
+#hindsight-url {
+  font-family: var(--mono);
+}
+
+#hindsight-network {
+  border: 0;
+}
+
+#hindsight-discovery {
+  padding-inline: .85rem;
+  padding-bottom: .65rem;
+}
+
+#hindsight-search {
+  flex: 1 1 14rem;
+}
+
+.desk-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.desk-note,
+.desk-muted,
+.desk-status {
+  overflow-wrap: anywhere;
+  font-size: .84rem;
+  color: var(--dim);
+  line-height: 1.5;
+}
+
+.desk-note {
+  margin-block: .65rem;
+}
+
+.desk-note a {
+  color: var(--ice);
+}
+
+.desk-status {
+  margin-block: .8rem;
+  color: var(--ice);
+}
+
+.desk-error {
+  color: var(--rose);
+}
+
+.desk-status:empty,
+.desk-note:empty {
+  display: none;
+}
+
+.settings-grid,
+.hindsight-grid {
+  display: grid;
+  gap: .8rem;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.55fr);
+  align-items: start;
+}
+
+.hindsight-grid {
+  grid-template-columns: minmax(0, 1.9fr) minmax(12rem, 1fr);
+}
+
+.settings-list h2,
+.settings-editor h2,
+.hindsight-detail h2 {
+  margin-bottom: .65rem;
+  overflow-wrap: anywhere;
+}
+
+#settings-count {
+  margin: .65rem 0 .3rem;
+}
+
+#settings-rows {
+  list-style: none;
+  padding: 0;
+  margin: .18rem 0 .6rem;
+  max-height: 27rem;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+#settings-rows li+li {
+  margin-top: .23rem;
+}
+
+#settings-rows button {
+  width: 100%;
+  display: flex;
+  gap: .5rem;
+  text-align: start;
+  justify-content: space-between;
+  align-items: center;
+  overflow-wrap: anywhere;
+  border-color: transparent;
+  background: #141c25;
+  font-family: var(--mono);
+}
+
+#settings-rows button[aria-pressed="true"] {
+  border-color: #567788;
+  background: #20313e;
+  color: var(--ice);
+}
+
+#settings-rows small {
+  color: var(--dim);
+  white-space: nowrap;
+  font: .72rem/1.2 system-ui, sans-serif;
+}
+
+#settings-path {
+  display: block;
+  color: var(--dim);
+  font-size: .74rem;
+  overflow-wrap: anywhere;
+}
+
+#settings-description {
+  margin-block: .7rem;
+}
+
+#settings-form label {
+  display: block;
+  margin-block-start: .75rem;
+}
+
+#settings-undo {
+  margin-top: .7rem;
+}
+
+#settings-unlisted {
+  margin-top: .85rem;
+}
+
+.operator-panel pre {
+  max-height: 24rem;
+  overflow: auto;
+  background: var(--plane);
+  border: 1px solid var(--edge);
+  border-radius: .45rem;
+  padding: .8rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: .81rem/1.55 var(--mono);
+}
+
+.operator-panel .desk-primary,
+#desk-confirm .desk-primary {
+  color: #111f2c;
+  background: var(--ice);
+  border-color: var(--ice);
+  font-weight: 700;
+}
+
+.operator-panel .desk-primary:not(:disabled):hover,
+#desk-confirm .desk-primary:hover {
+  background: #c4effa;
+}
+
+.hindsight-stats {
+  display: grid;
+  gap: .55rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  margin-block: 1rem;
+}
+
+.hindsight-stats div {
+  border: 1px solid var(--edge);
+  border-radius: .5rem;
+  background: var(--pane, #151e28);
+  padding: .6rem .75rem;
+}
+
+.hindsight-stats dt {
+  color: var(--dim);
+  font-size: .77rem;
+}
+
+.hindsight-stats dd {
+  margin: .14rem 0 0;
+  font: 600 1.25rem/1.3 var(--mono);
+}
+
+.hindsight-graph-heading {
+  display: flex;
+  gap: .65rem;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.hindsight-graph-heading label {
+  flex: 0 1 11rem;
+}
+
+#hindsight-graph {
+  display: block;
+  width: 100%;
+  margin-block: .8rem .35rem;
+  border: 1px solid var(--edge);
+  border-radius: .5rem;
+  background: radial-gradient(ellipse, #21303e 0%, #111821 72%);
+}
+
+#hindsight-edges line {
+  stroke-width: 1.6;
+  opacity: .85;
+}
+
+.link-color-0 {
+  stroke: #9ae3f1;
+}
+
+.link-color-1 {
+  stroke: #f4a8c1;
+}
+
+.link-color-2 {
+  stroke: #b8b9f4;
+}
+
+.link-color-3 {
+  stroke: #f4ca91;
+}
+
+#hindsight-points circle {
+  fill: #b3eaf3;
+  stroke: #253847;
+  stroke-width: 1.75;
+  cursor: pointer;
+}
+
+#hindsight-points circle.chosen {
+  fill: #ffc0ce;
+  stroke: #fff;
+  stroke-width: 2.1;
+}
+
+#hindsight-points text {
+  fill: #edf3fb;
+  font: 12px var(--mono);
+  paint-order: stroke;
+  stroke: #121a24;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+#hindsight-node-text {
+  margin-top: .8rem;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+#hindsight-node-links {
+  margin-block: .7rem 0;
+  padding-inline-start: 1.2rem;
+}
+
+#hindsight-node-links li {
+  color: var(--dim);
+  font-size: .83rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.hindsight-config {
+  margin-top: .85rem;
+}
+
+#desk-confirm {
+  width: min(34rem, calc(100% - 1.5rem));
+  padding: 1.2rem;
+  border: 1px solid #526e80;
+  border-radius: .65rem;
+  background: var(--panel);
+  color: var(--text);
+}
+
+#desk-confirm::backdrop {
+  background: #080e15db;
+}
+
+#desk-confirm-detail {
+  margin-block: .7rem 1rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  color: var(--dim);
+}
+
+#desk-confirm .desk-actions {
+  justify-content: end;
+}
+
+@media (max-width: 700px) {
+
+  .settings-grid,
+  .hindsight-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-list,
+  .settings-editor,
+  .hindsight-detail,
+  .hindsight-scene,
+  .hindsight-config {
+    padding: .8rem;
+  }
+
+  #settings-rows {
+    max-height: 12rem;
+  }
+
+  .desk-toolbar label {
+    flex-basis: 100%;
+  }
+
+  .desk-tabs {
+    gap: .2rem;
+    margin-top: -.5rem;
+  }
+
+  .desk-tabs button {
+    padding: .48rem .63rem;
+  }
+}

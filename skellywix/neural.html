@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Harness Neural Map · Skellywix</title>
+  <link rel="stylesheet" href="/neural.css">
+  <link rel="stylesheet" href="/operator.css">
+  <script type="module" src="/neural.js"></script>
+  <script type="module" src="/operator.js"></script>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to the workspace</a>
+  <header class="masthead">
+    <div class="brand"><span class="mark" aria-hidden="true">◈</span><span>SKELLYWIX</span><span class="divider"
+        aria-hidden="true"></span><span class="brand-feature">Operator desk</span></div>
+    <div class="private"><span class="privacy-dot" aria-hidden="true"></span> Loopback only</div>
+  </header>
+  <main id="main">
+    <div class="desk-tabs" role="tablist" aria-label="Harness workspace">
+      <button id="tab-map" type="button" role="tab" aria-selected="true" aria-controls="map-panel">Neural map</button>
+      <button id="tab-settings" type="button" role="tab" aria-selected="false" aria-controls="settings-panel"
+        tabindex="-1">Settings</button>
+      <button id="tab-hindsight" type="button" role="tab" aria-selected="false" aria-controls="hindsight-panel"
+        tabindex="-1">Hindsight</button>
+    </div>
+    <section id="map-panel" role="tabpanel" aria-labelledby="tab-map" tabindex="0">
+      <div class="intro">
+        <div>
+          <p class="eyebrow">HARNESS OBSERVATORY</p>
+          <h1>Harness neural map</h1>
+          <p class="subtitle">Follow a prompt through the boundaries OMP records. Explore everything else as inventory.
+          </p>
+        </div>
+        <div class="watch" id="watch" role="status"><span class="status-dot" aria-hidden="true"></span><span
+            id="connection">Connecting to local observer</span></div>
+      </div>
+      <section class="flight" aria-label="Prompt selection">
+        <label for="prompt-select">Prompt activity</label>
+        <select id="prompt-select" disabled>
+          <option>Waiting for a recorded prompt</option>
+        </select>
+        <button type="button" id="follow" aria-pressed="true">Follow latest</button>
+      </section>
+      <noscript>
+        <p class="no-script">JavaScript is required to display the local observer feed.</p>
+      </noscript>
+      <div class="workbench">
+        <section class="panel graph-panel" aria-labelledby="graph-title">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">01 / NETWORK</p>
+              <h2 id="graph-title">Signal paths in 3D</h2>
+            </div>
+            <div class="legend" aria-label="Path legend"><span><i class="lit"
+                  aria-hidden="true"></i>Recorded</span><span><i aria-hidden="true"></i>Not recorded</span><span><i
+                  class="problem" aria-hidden="true"></i>Error or block</span></div>
+          </div>
+          <div class="scene">
+            <canvas id="neural-scene" aria-hidden="true"></canvas>
+            <p class="scene-hud" id="scene-summary">Waiting for local discovery</p>
+            <p class="scene-fallback" id="scene-fallback" hidden>3D drawing unavailable. Use the component filters and
+              timeline.</p>
+          </div>
+          <div class="camera" id="camera" role="group" aria-label="3D view controls">
+            <span class="camera-hint">Drag to orbit</span>
+            <button type="button" aria-label="Orbit left" title="Orbit left" data-camera="left">←</button>
+            <button type="button" aria-label="Orbit right" title="Orbit right" data-camera="right">→</button>
+            <button type="button" aria-label="Tilt up" title="Tilt up" data-camera="up">↑</button>
+            <button type="button" aria-label="Tilt down" title="Tilt down" data-camera="down">↓</button>
+            <button type="button" aria-label="Zoom out" title="Zoom out" data-camera="out">−</button>
+            <button type="button" aria-label="Zoom in" title="Zoom in" data-camera="in">+</button>
+            <button type="button" data-camera="reset">Reset view</button>
+            <button type="button" data-camera="rotate" aria-pressed="false">Auto-rotate</button>
+            <button type="button" data-camera="pause" aria-pressed="false">Pause motion</button>
+          </div>
+          <p class="panel-foot" id="network-note">A lit path requires journal evidence. An MCP path stops at the
+            addressed
+            device.</p>
+        </section>
+        <section class="panel timeline-panel" aria-labelledby="timeline-title">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">02 / JOURNAL</p>
+              <h2 id="timeline-title">Prompt timeline</h2>
+            </div>
+            <span class="counter" id="timeline-count">0 events</span>
+          </div>
+          <p class="empty" id="timeline-empty">Submit a prompt in OMP. Recorded events appear here as the session
+            journal
+            updates.</p>
+          <ol id="timeline" class="timeline" aria-label="Recorded prompt events"></ol>
+          <p class="panel-foot" id="timeline-note">Chronological on this prompt’s ancestry. No prompt text, tool
+            arguments, or results.</p>
+        </section>
+      </div>
+      <section class="panel inspector" aria-labelledby="inspector-title">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">03 / INVENTORY</p>
+            <h2 id="inspector-title">Component inspector</h2>
+          </div>
+          <div class="filter"><label for="filter">Filter components</label><input type="search" id="filter"
+              placeholder="Name or kind" autocomplete="off" spellcheck="false"></div>
+        </div>
+        <div class="branches" id="branches" role="group" aria-label="Filter by component group">
+          <button type="button" class="branch" id="core" data-group="all" aria-pressed="true">
+            <span><strong>All components</strong><small id="core-state">Awaiting journal</small></span>
+          </button>
+        </div>
+        <p class="inspection-scope" id="inspection-scope">All components · waiting for discovery</p>
+        <div class="inspection-grid">
+          <div>
+            <ul id="components" class="components" aria-label="Matching components"></ul><button type="button" id="more"
+              class="more" hidden>Show more</button>
+          </div>
+          <section id="details" class="detail" aria-labelledby="detail-title">
+            <h3 id="detail-title">Relationships</h3>
+            <div id="detail-body">
+              <p>Select a component to see its source and directed connections.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+      <details class="coverage">
+        <summary>Discovery coverage and blind spots</summary>
+        <p>Inventory is not a health check. A cache entry does not prove a connection. An addressed MCP tool does not
+          prove a downstream call reached its database. Lint output, inner hooks, job runs, and remote work are unlit
+          unless a supported journal record identifies them.</p>
+        <dl id="coverage"></dl>
+      </details>
+    </section>
+    <section id="settings-panel" class="operator-panel" role="tabpanel" aria-labelledby="tab-settings" tabindex="0"
+      hidden>
+      <header class="desk-heading">
+        <p class="eyebrow">LOCAL CONFIGURATION</p>
+        <h1>Harness settings</h1>
+        <p class="subtitle">Discover native Pi and OMP configuration. Open a source, then review and save one change at
+          a time.</p>
+      </header>
+      <div class="desk-lock panel">
+        <h2>Operator access required</h2>
+        <p>Start <code>skellywix neural-map --operator</code> and open the private link printed in your terminal. The
+          map alone cannot edit settings.</p>
+        <form class="desk-unlock" aria-label="Unlock Settings">
+          <label>Operator access key <input type="password" required autocomplete="off" spellcheck="false"></label>
+          <button type="submit">Unlock</button>
+        </form>
+      </div>
+      <div id="settings-body" hidden>
+        <fieldset id="settings-controls" class="panel desk-toolbar">
+          <legend class="desk-sr">Configuration source</legend>
+          <label for="settings-harness">Harness
+            <select id="settings-harness">
+              <option value="OMP">OMP</option>
+              <option value="Pi">Pi</option>
+            </select>
+          </label>
+          <label for="settings-source">Source
+            <select id="settings-source"></select>
+          </label>
+          <button id="settings-refresh" type="button">Reload source</button>
+        </fieldset>
+        <p id="settings-boundary" class="desk-note"></p>
+        <div class="settings-grid" id="settings-grid">
+          <section class="panel settings-list" aria-labelledby="settings-list-title">
+            <h2 id="settings-list-title">Fields</h2>
+            <label for="settings-filter">Find a setting
+              <input id="settings-filter" type="search" placeholder="Search names or descriptions" autocomplete="off">
+            </label>
+            <p id="settings-count" class="desk-muted"></p>
+            <ul id="settings-rows" aria-label="Matching fields"></ul>
+            <button type="button" id="settings-add" hidden>Add custom entry</button>
+          </section>
+          <section class="panel settings-editor" aria-labelledby="settings-key">
+            <p class="eyebrow" id="settings-state">STORED VALUES</p>
+            <h2 id="settings-key">Select a field</h2>
+            <code id="settings-path"></code>
+            <p id="settings-description" class="desk-muted"></p>
+            <form id="settings-form" hidden>
+              <label id="settings-custom-wrap" for="settings-custom" hidden>Entry name
+                <input id="settings-custom" type="text" spellcheck="false" maxlength="250" autocomplete="off">
+              </label>
+              <label id="settings-input-wrap" for="settings-input">Value</label>
+              <p id="settings-default" class="desk-note"></p>
+              <div class="desk-actions">
+                <button id="settings-save" class="desk-primary" type="submit">Review change</button>
+                <button id="settings-reset" type="button">Remove override</button>
+              </div>
+            </form>
+            <button id="settings-undo" type="button" hidden>Undo last save</button>
+            <details id="settings-unlisted" hidden>
+              <summary>Unlisted entries in this file</summary>
+              <pre></pre>
+            </details>
+          </section>
+        </div>
+      </div>
+      <p id="settings-status" class="desk-status" role="status"></p>
+    </section>
+    <section id="hindsight-panel" class="operator-panel" role="tabpanel" aria-labelledby="tab-hindsight" tabindex="0"
+      hidden>
+      <header class="desk-heading">
+        <p class="eyebrow">MEMORY OBSERVATORY</p>
+        <h1>Hindsight</h1>
+        <p class="subtitle">Inspect a memory bank, its constellation of memories, and how entities connect.</p>
+      </header>
+      <div class="desk-lock panel">
+        <h2>Operator access required</h2>
+        <p>Open the private operator link to discover Hindsight. The desk won't connect until you confirm the API
+          address.</p>
+        <form class="desk-unlock" aria-label="Unlock Hindsight">
+          <label>Operator access key <input type="password" required autocomplete="off" spellcheck="false"></label>
+          <button type="submit">Unlock</button>
+        </form>
+      </div>
+      <div id="hindsight-body" hidden>
+        <form id="hindsight-connect" class="panel">
+          <fieldset id="hindsight-network" class="desk-toolbar">
+            <legend class="desk-sr">Hindsight connection</legend>
+            <label for="hindsight-hint" id="hindsight-hint-wrap" hidden>Discovered connection
+              <select id="hindsight-hint"></select>
+            </label>
+            <label for="hindsight-url">API base URL
+              <input id="hindsight-url" type="url" placeholder="http://127.0.0.1:8888" required autocomplete="off">
+            </label>
+            <label for="hindsight-token">API key (if required)
+              <input id="hindsight-token" type="password" autocomplete="off" spellcheck="false">
+            </label>
+            <button type="submit" class="desk-primary">Review connection</button>
+            <button id="hindsight-disconnect" type="button" hidden>Disconnect</button>
+          </fieldset>
+          <p id="hindsight-discovery" class="desk-note">Checking file declarations. No requests have been sent.</p>
+        </form>
+        <p id="hindsight-status" class="desk-status" role="status"></p>
+        <div id="hindsight-banks" hidden>
+          <fieldset class="panel desk-toolbar" id="hindsight-controls">
+            <legend class="desk-sr">Memory bank and graph</legend>
+            <form id="hindsight-search" class="desk-search">
+              <label for="hindsight-query">Find a bank
+                <input id="hindsight-query" type="search" maxlength="120" autocomplete="off">
+              </label>
+              <button type="submit">Find</button>
+            </form>
+            <label for="hindsight-bank">Memory bank <select id="hindsight-bank"></select></label>
+            <label for="hindsight-mode">Graph
+              <select id="hindsight-mode">
+                <option value="memory">Memory constellation</option>
+                <option value="entities">Entity co-occurrence</option>
+              </select>
+            </label>
+            <button type="button" id="hindsight-load" class="desk-primary">Load bank</button>
+            <div class="desk-actions">
+              <button type="button" id="hindsight-previous" disabled>Previous</button>
+              <button type="button" id="hindsight-next" disabled>Next</button>
+            </div>
+          </fieldset>
+          <div id="hindsight-result" hidden>
+            <dl id="hindsight-stats" class="hindsight-stats" aria-label="Bank counts"></dl>
+            <p id="hindsight-issues" class="desk-note"></p>
+            <div class="hindsight-grid">
+              <section class="panel hindsight-scene" aria-labelledby="hindsight-graph-title">
+                <div class="hindsight-graph-heading">
+                  <div>
+                    <p class="eyebrow">RELATIONSHIPS</p>
+                    <h2 id="hindsight-graph-title">Memory constellation</h2>
+                  </div>
+                  <label for="hindsight-link">Connection type <select id="hindsight-link"></select></label>
+                </div>
+                <svg id="hindsight-graph" viewBox="0 0 680 395" role="img" aria-labelledby="hindsight-graph-name">
+                  <title id="hindsight-graph-name">Memory bank graph</title>
+                  <g id="hindsight-edges"></g>
+                  <g id="hindsight-points"></g>
+                </svg>
+                <p id="hindsight-graph-count" class="desk-note" role="status"></p>
+              </section>
+              <section class="panel hindsight-detail" aria-labelledby="hindsight-node-heading">
+                <p class="eyebrow">NODE INSPECTOR</p>
+                <h2 id="hindsight-node-heading">Inspect a node</h2>
+                <label for="hindsight-node">Graph node <select id="hindsight-node"></select></label>
+                <p id="hindsight-node-text"></p>
+                <ul id="hindsight-node-links" aria-label="Connections"></ul>
+              </section>
+            </div>
+            <details class="panel hindsight-config" id="hindsight-config">
+              <summary>Bank configuration · read-only</summary>
+              <pre id="hindsight-config-text"></pre>
+            </details>
+          </div>
+        </div>
+        <p class="desk-note">This connection lasts for this desk session. Use <a
+            href="https://ui.hindsight.vectorize.io/" target="_blank" rel="noopener noreferrer">Hindsight Cloud</a> or
+          your self-hosted console to change bank configuration.</p>
+      </div>
+      <p id="hindsight-unlock-status" class="desk-status" role="status"></p>
+    </section>
+    <dialog id="desk-confirm" aria-labelledby="desk-confirm-title" aria-describedby="desk-confirm-detail">
+      <form>
+        <h2 id="desk-confirm-title"></h2>
+        <p id="desk-confirm-detail"></p>
+        <div class="desk-actions">
+          <button id="desk-cancel" type="button" autofocus>Cancel</button>
+          <button type="submit" class="desk-primary" id="desk-accept">Confirm</button>
+        </div>
+      </form>
+    </dialog>
+  </main>
+  <footer>Private local workspace. No export, external assets, or telemetry.</footer>
+</body>
+
+</html>
